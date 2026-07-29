@@ -1,0 +1,37 @@
+{
+  "name": "sellersprite-mcp",
+  "version": "0.1.0",
+  "description": "SellerSprite MCP server for logged-in web and browser-extension requests",
+  "type": "module",
+  "private": false,
+  "bin": {
+    "sellersprite-mcp": "src/server.mjs"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "test:live": "node --test test/live.test.mjs",
+    "check": "node --check src/server.mjs && node --check src/adapter.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "mcp",
+    "sellersprite",
+    "amazon",
+    "market-research"
+  ],
+  "files": [
+    "src",
+    "scripts",
+    "skills",
+    ".codex-plugin",
+    ".mcp.json",
+    "data",
+    "config/session.example.json",
+    "config/extension-state.example.json",
+    "README.md",
+    "README.en.md"
+  ]
+}
