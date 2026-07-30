@@ -11,7 +11,7 @@
     "start": "node src/server.mjs",
     "test": "node --test \"test/*.test.mjs\"",
     "test:live": "node --test test/live.test.mjs",
-    "check": "node --check src/server.mjs && node --check src/adapter.mjs"
+    "check": "node --check src/server.mjs && node --check src/adapter.mjs && node --check scripts/start-mcp.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -25,12 +25,15 @@
   "files": [
     "src",
     "scripts",
-    "skills",
-    "assets",
-    ".codex-plugin",
-    ".mcp.json",
     "data",
+    "mcp.example.json",
     "README.md",
     "README.en.md"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JieXi-11/SellerSprite.git"
+  },
+  "homepage": "https://github.com/JieXi-11/SellerSprite#readme",
+  "license": "MIT"
 }

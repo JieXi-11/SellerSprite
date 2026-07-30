@@ -61,15 +61,31 @@ The full catalog is in [`data/operations.json`](data/operations.json). Every ope
 
 There are no runtime npm dependencies.
 
-## Codex Plugin
+## MCP Installation
 
-This directory is a Codex plugin. `.codex-plugin/plugin.json`, `.mcp.json`, `skills/sellersprite-research/SKILL.md`, and `scripts/start-mcp.mjs` are committed with the MCP source. After installing or updating the plugin, refresh the Codex plugin page and start a new task so Codex loads the new Skill and MCP tools.
+Install the MCP command directly from GitHub. Cloning the repository or choosing a fixed directory is not required:
 
-Trigger example:
-
-```text
-Use SellerSprite MCP to check the session and analyze traffic keywords for ASIN B00CKFL93K.
+```bash
+npm install -g github:JieXi-11/SellerSprite
 ```
+
+This installs the `sellersprite-mcp` command. Configure any MCP client with:
+
+```json
+{
+  "mcpServers": {
+    "sellersprite": {
+      "command": "sellersprite-mcp",
+      "args": [],
+      "env": {
+        "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
+      }
+    }
+  }
+}
+```
+
+See [`mcp.example.json`](mcp.example.json) for the complete example.
 
 ## Quick Start
 
@@ -77,14 +93,14 @@ Use SellerSprite MCP to check the session and analyze traffic keywords for ASIN 
 
 ```powershell
 git clone https://github.com/JieXi-11/SellerSprite.git
-cd SellerSprite/plugins/sellersprite-mcp
+cd SellerSprite
 node --check src/server.mjs
 node --test "test/*.test.mjs"
 ```
 
 ### 2. Start a login browser
 
-The recommended path is to install the Codex plugin and call `sellersprite_login`. It discovers Chrome, Edge, Brave, or Chromium on Windows, macOS, and Linux and selects a platform-appropriate persistent profile directory.
+After installing the MCP, an Agent can call `sellersprite_login`. It discovers Chrome, Edge, Brave, or Chromium on Windows, macOS, and Linux and selects a platform-appropriate persistent profile directory.
 
 For manual startup on macOS:
 
@@ -145,7 +161,20 @@ node src/server.mjs
 
 ## Codex Configuration
 
-Prefer the bundled Codex plugin. Its `.mcp.json` uses plugin-root-relative paths, so the repository can live in any directory without editing `config.toml`.
+Install the global command and register it with Codex:
+
+```bash
+npm install -g github:JieXi-11/SellerSprite
+codex mcp add sellersprite --env SELLERSPRITE_CDP_URL=http://127.0.0.1:9222 -- sellersprite-mcp
+```
+
+Verify the registration:
+
+```bash
+codex mcp get sellersprite
+```
+
+Run `npm install -g github:JieXi-11/SellerSprite` again to update. Codex starts the globally installed command, so its configuration contains no repository, drive, or user-specific path.
 
 ### Using the login tool
 
@@ -175,9 +204,8 @@ For a generic stdio MCP client:
 {
   "mcpServers": {
     "sellersprite": {
-      "command": "node",
-      "args": ["scripts/start-mcp.mjs"],
-      "cwd": ".",
+      "command": "sellersprite-mcp",
+      "args": [],
       "env": {
         "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
       }

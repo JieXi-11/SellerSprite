@@ -1,11 +1,8 @@
 {
   "mcpServers": {
     "sellersprite": {
-      "command": "node",
-      "args": [
-        "scripts/start-mcp.mjs"
-      ],
-      "cwd": ".",
+      "command": "sellersprite-mcp",
+      "args": [],
       "env": {
         "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
       }

@@ -10,12 +10,12 @@ import { defaultBrowserProfilePath } from '../src/browser-login.mjs';
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-test('plugin MCP configuration is directory-independent', async () => {
-  const config = JSON.parse(await readFile(resolve(rootDir, '.mcp.json'), 'utf8'));
+test('published MCP configuration is directory-independent', async () => {
+  const config = JSON.parse(await readFile(resolve(rootDir, 'mcp.example.json'), 'utf8'));
   const server = config.mcpServers.sellersprite;
-  assert.equal(server.command, 'node');
-  assert.deepEqual(server.args, ['scripts/start-mcp.mjs']);
-  assert.equal(server.cwd, '.');
+  assert.equal(server.command, 'sellersprite-mcp');
+  assert.deepEqual(server.args, []);
+  assert.equal(server.cwd, undefined);
   assert.doesNotMatch(JSON.stringify(config), /"[A-Za-z]:[\\/]/);
   assert.doesNotMatch(JSON.stringify(config), /"\/(?:Users|home)\//);
 });
