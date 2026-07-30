@@ -1,6 +1,6 @@
 {
   "name": "sellersprite-mcp",
-  "version": "0.1.0+codex.20260730005024",
+  "version": "0.1.0+codex.20260730005859",
   "description": "Query SellerSprite product, keyword, traffic, ABA, market, ASIN, and review data from Codex.",
   "author": {
     "name": "SellerSprite MCP contributors"
@@ -30,6 +30,9 @@
       "Use SellerSprite to find and explain product-research opportunities.",
       "Query SellerSprite keyword, ABA, market, or review data."
     ],
-    "brandColor": "#F28C00"
+    "brandColor": "#F28C00",
+    "composerIcon": "./assets/sellersprite-icon.png",
+    "logo": "./assets/sellersprite-icon.png",
+    "logoDark": "./assets/sellersprite-icon.png"
   }
 }
