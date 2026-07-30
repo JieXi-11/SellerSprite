@@ -66,8 +66,13 @@ session_status -> [login] -> list_operations -> describe_operation -> call
 推荐直接从 GitHub 安装为全局 npm 命令，无需克隆仓库，也不依赖固定目录：
 
 ```bash
+node --version
+npm --version
 npm install -g github:JieXi-11/SellerSprite
+npm list -g sellersprite-mcp --depth=0
 ```
+
+`node --version` 需要输出 `v22` 或更高版本。安装命令执行后，`sellersprite-mcp` 必须位于当前终端的 `PATH`；重新启动 Codex 后再添加 MCP。
 
 安装后系统中会提供 `sellersprite-mcp` 命令。MCP 客户端使用以下配置即可启动服务：
 
@@ -198,6 +203,8 @@ codex mcp get sellersprite
 | 环境变量传递 | 留空 |
 
 Windows 客户端提示找不到启动命令时，将启动命令填写为 `sellersprite-mcp.cmd`。保存配置后重新加载 MCP，并调用 `sellersprite_session_status` 检查连接。
+
+如果 Codex 显示 Skill 已加载但 MCP 工具列表为空，说明旧插件仍在运行或 MCP 进程启动失败。停用旧的 SellerSprite 插件，确认 `node`、`npm` 和 `sellersprite-mcp` 在启动 Codex 的用户环境中可执行，然后创建新任务。MCP 工具显示在工具列表中，不显示为 `@` 插件标签。
 
 更新项目时重新执行 `npm install -g github:JieXi-11/SellerSprite`。MCP 使用全局命令启动，因此仓库克隆位置、盘符和用户目录不会进入 Codex 配置。
 

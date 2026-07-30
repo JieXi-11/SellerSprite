@@ -66,8 +66,13 @@ There are no runtime npm dependencies.
 Install the MCP command directly from GitHub. Cloning the repository or choosing a fixed directory is not required:
 
 ```bash
+node --version
+npm --version
 npm install -g github:JieXi-11/SellerSprite
+npm list -g sellersprite-mcp --depth=0
 ```
+
+`node --version` must report `v22` or newer. After installation, `sellersprite-mcp` must be available on the terminal `PATH`; restart Codex before adding the MCP.
 
 This installs the `sellersprite-mcp` command. Configure any MCP client with:
 
@@ -189,6 +194,8 @@ Run the global `npm install -g` command above, then fill the form as follows:
 | Environment variable passthrough | Leave empty |
 
 If a Windows client reports that the startup command is not found, use `sellersprite-mcp.cmd`. After saving, reload the MCP configuration and call `sellersprite_session_status` to verify the connection.
+
+If Codex reports that the Skill loaded but the MCP tool list is empty, an old plugin is still active or the MCP process did not start. Disable the old SellerSprite plugin, verify that `node`, `npm`, and `sellersprite-mcp` are executable in the environment that launches Codex, and create a new task. MCP tools appear in the tool list, not as an `@` plugin label.
 
 Run `npm install -g github:JieXi-11/SellerSprite` again to update. Codex starts the globally installed command, so its configuration contains no repository, drive, or user-specific path.
 
