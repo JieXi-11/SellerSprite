@@ -174,6 +174,22 @@ Verify the registration:
 codex mcp get sellersprite
 ```
 
+### Custom MCP form
+
+Run the global `npm install -g` command above, then fill the form as follows:
+
+| Field | Value |
+|---|---|
+| Name | `sellersprite` |
+| Type | `STDIO` |
+| Startup command | `sellersprite-mcp` |
+| Arguments | Leave empty |
+| Environment variable key | `SELLERSPRITE_CDP_URL` |
+| Environment variable value | `http://127.0.0.1:9222` |
+| Environment variable passthrough | Leave empty |
+
+If a Windows client reports that the startup command is not found, use `sellersprite-mcp.cmd`. After saving, reload the MCP configuration and call `sellersprite_session_status` to verify the connection.
+
 Run `npm install -g github:JieXi-11/SellerSprite` again to update. Codex starts the globally installed command, so its configuration contains no repository, drive, or user-specific path.
 
 ### Using the login tool

@@ -183,6 +183,22 @@ codex mcp add sellersprite --env SELLERSPRITE_CDP_URL=http://127.0.0.1:9222 -- s
 codex mcp get sellersprite
 ```
 
+### 在“连接至自定义 MCP”界面填写
+
+先执行上面的 `npm install -g`，然后按以下内容填写：
+
+| 界面字段 | 填写内容 |
+|---|---|
+| 名称 | `sellersprite` |
+| 类型 | `STDIO` |
+| 启动命令 | `sellersprite-mcp` |
+| 参数 | 留空 |
+| 环境变量键 | `SELLERSPRITE_CDP_URL` |
+| 环境变量值 | `http://127.0.0.1:9222` |
+| 环境变量传递 | 留空 |
+
+Windows 客户端提示找不到启动命令时，将启动命令填写为 `sellersprite-mcp.cmd`。保存配置后重新加载 MCP，并调用 `sellersprite_session_status` 检查连接。
+
 更新项目时重新执行 `npm install -g github:JieXi-11/SellerSprite`。MCP 使用全局命令启动，因此仓库克隆位置、盘符和用户目录不会进入 Codex 配置。
 
 ### 登录工具如何使用
