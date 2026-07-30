@@ -63,7 +63,7 @@ There are no runtime npm dependencies.
 
 ## Codex Plugin
 
-The repository root is also a Codex plugin. `.codex-plugin/plugin.json`, `.mcp.json`, `skills/sellersprite-research/SKILL.md`, and `scripts/start-mcp.mjs` are committed with the MCP source. After installing or updating the plugin, refresh the Codex plugin page and start a new task so Codex loads the new Skill and MCP tools.
+This directory is a Codex plugin. `.codex-plugin/plugin.json`, `.mcp.json`, `skills/sellersprite-research/SKILL.md`, and `scripts/start-mcp.mjs` are committed with the MCP source. After installing or updating the plugin, refresh the Codex plugin page and start a new task so Codex loads the new Skill and MCP tools.
 
 Trigger example:
 
@@ -76,8 +76,8 @@ Use SellerSprite MCP to check the session and analyze traffic keywords for ASIN 
 ### 1. Get the project
 
 ```powershell
-git clone https://github.com/JieXi-11/amazon.git sellersprite-mcp
-cd sellersprite-mcp
+git clone https://github.com/JieXi-11/SellerSprite.git
+cd SellerSprite/plugins/sellersprite-mcp
 node --check src/server.mjs
 node --test "test/*.test.mjs"
 ```
