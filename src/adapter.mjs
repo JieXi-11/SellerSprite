@@ -5,9 +5,6 @@ const inputArg = process.argv[3] || '{}';
 const input = inputArg.startsWith('@')
   ? JSON.parse(await readFile(inputArg.slice(1), 'utf8'))
   : JSON.parse(inputArg);
-const sessionPath = process.env.SELLERSPRITE_SESSION || 'config/session.json';
-const extensionStatePath = process.env.SELLERSPRITE_EXTENSION_STATE
-  || 'config/extension-state.json';
 const extensionId = 'lnbmbgocenenhhhdojdielgnmeflbnfb';
 const extensionVersion = '5.0.4';
 
@@ -771,28 +768,11 @@ let extensionStatePromise;
 let extensionAuthToken;
 async function readExtensionState() {
   if (!extensionStatePromise) extensionStatePromise = (async () => {
-    if (process.env.SELLERSPRITE_EXTENSION_STATE_JSON) {
-      const state = JSON.parse(process.env.SELLERSPRITE_EXTENSION_STATE_JSON);
-      if (!state.token || !state.uuid) throw new Error('SellerSprite extension token or UUID missing in CDP state.');
-      extensionAuthToken ||= state.token;
-      return { token: state.token, uuid: state.uuid, fingerprint: state.fingerprint || null };
-    }
-    const buffer = await readFile(extensionStatePath);
-    if (extensionStatePath.toLowerCase().endsWith('.json')) {
-      const state = JSON.parse(buffer.toString('utf8'));
-      if (!state.token || !state.uuid) throw new Error(`SellerSprite extension token or UUID missing in ${extensionStatePath}`);
-      extensionAuthToken ||= state.token;
-      return { token: state.token, uuid: state.uuid, fingerprint: state.fingerprint || null };
-    }
-    const raw = buffer.toString('latin1');
-    const tokens = [...raw.matchAll(/\{"avatar":null[^\r\n]{0,1600}?"token":"([^"]+)"\}/g)];
-    const uuids = [...raw.matchAll(/__UUID[^0-9a-f]{0,32}"([0-9a-f-]{36})"/gi)];
-    const fingerprints = [...raw.matchAll(/__FPH[^\r\n]{0,300}?"value":"([^"]+)"/g)];
-    const token = tokens.at(-1)?.[1];
-    const uuid = uuids.at(-1)?.[1];
-    if (!token || !uuid) throw new Error(`SellerSprite extension login state not found in ${extensionStatePath}`);
-    extensionAuthToken ||= token;
-    return { token, uuid, fingerprint: fingerprints.at(-1)?.[1] || null };
+    if (!process.env.SELLERSPRITE_EXTENSION_STATE_JSON) throw new Error('SellerSprite extension CDP state is missing.');
+    const state = JSON.parse(process.env.SELLERSPRITE_EXTENSION_STATE_JSON);
+    if (!state.token || !state.uuid) throw new Error('SellerSprite extension token or UUID missing in CDP state.');
+    extensionAuthToken ||= state.token;
+    return { token: state.token, uuid: state.uuid, fingerprint: state.fingerprint || null };
   })();
   return extensionStatePromise;
 }
@@ -885,9 +865,8 @@ if (process.env.SELLERSPRITE_DRY_RUN === '1') {
   console.log(JSON.stringify({ operation, request }, null, 2));
   process.exit(0);
 }
-const session = process.env.SELLERSPRITE_SESSION_JSON
-  ? JSON.parse(process.env.SELLERSPRITE_SESSION_JSON)
-  : JSON.parse(await readFile(sessionPath, 'utf8'));
+if (!process.env.SELLERSPRITE_SESSION_JSON) throw new Error('SellerSprite web CDP session is missing.');
+const session = JSON.parse(process.env.SELLERSPRITE_SESSION_JSON);
 async function execute(item) {
   const expectsHtml = item.metadata?.responseType === 'html';
   const headers = {

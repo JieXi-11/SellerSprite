@@ -7,7 +7,6 @@
       ],
       "cwd": ".",
       "env": {
-        "SELLERSPRITE_AUTH_MODE": "cdp",
         "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
       }
     }

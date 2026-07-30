@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { access, readFile } from 'node:fs/promises';
-import { constants as fsConstants } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
@@ -18,10 +17,7 @@ const protocolVersion = '2025-06-18';
 const supportedProtocolVersions = new Set(['2024-11-05', '2025-03-26', protocolVersion]);
 const callTimeoutMs = Number(process.env.SELLERSPRITE_CALL_TIMEOUT_MS || 120000);
 const maxOutputBytes = Number(process.env.SELLERSPRITE_MAX_OUTPUT_BYTES || 20 * 1024 * 1024);
-const authMode = String(process.env.SELLERSPRITE_AUTH_MODE || 'cdp').toLowerCase();
 const cdpUrl = process.env.SELLERSPRITE_CDP_URL || 'http://127.0.0.1:9222';
-const sessionPath = resolve(process.env.SELLERSPRITE_SESSION || resolve(rootDir, 'config/session.json'));
-const extensionStatePath = resolve(process.env.SELLERSPRITE_EXTENSION_STATE || resolve(rootDir, 'config/extension-state.json'));
 const extensionId = 'lnbmbgocenenhhhdojdielgnmeflbnfb';
 const browserPath = process.env.SELLERSPRITE_BROWSER_PATH || null;
 const browserProfilePath = process.env.SELLERSPRITE_BROWSER_PROFILE || null;
@@ -98,57 +94,20 @@ function requireOperation(name) {
   return operations[name];
 }
 
-async function fileExists(path) {
-  try {
-    await access(path, fsConstants.R_OK);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function sessionStatus() {
-  if (authMode === 'cdp') {
-    const status = await inspectCdpAuth(cdpUrl, extensionId);
-    return { ...status, ready: status.web.valid, operationCount: Object.keys(operations).length };
-  }
-  const webExists = await fileExists(sessionPath);
-  const extensionExists = await fileExists(extensionStatePath);
-  let webValid = false;
-  let webError = null;
-  if (webExists) {
-    try {
-      const value = JSON.parse(await readFile(sessionPath, 'utf8'));
-      webValid = typeof value.cookie === 'string' && value.cookie.length > 0
-        && typeof value.userAgent === 'string' && value.userAgent.length > 0;
-      if (!webValid) webError = 'Expected non-empty cookie and userAgent strings.';
-    } catch (error) {
-      webError = error.message;
-    }
-  }
-  return {
-    mode: 'file',
-    ready: webValid,
-    web: { configured: webExists, valid: webValid, path: sessionPath, error: webError },
-    extension: { configured: extensionExists, path: extensionStatePath, requiredOnlyForExtensionOperations: true },
-    operationCount: Object.keys(operations).length
-  };
+  const status = await inspectCdpAuth(cdpUrl, extensionId);
+  return { ...status, ready: status.web.valid, operationCount: Object.keys(operations).length };
 }
 
 async function executeOperation(operation, params) {
   const operationDefinition = requireOperation(operation);
   const args = [adapterPath, operation, JSON.stringify(params || {})];
   const env = { ...process.env };
-  if (authMode === 'cdp') {
-    const webSession = await readCdpWebSession(cdpUrl);
-    env.SELLERSPRITE_SESSION_JSON = JSON.stringify({ cookie: webSession.cookie, userAgent: webSession.userAgent });
-    if (['extension', 'mixed'].includes(operationDefinition.authentication)) {
-      const extensionState = await readCdpExtensionState(cdpUrl, extensionId);
-      env.SELLERSPRITE_EXTENSION_STATE_JSON = JSON.stringify(extensionState);
-    }
-  } else {
-    env.SELLERSPRITE_SESSION = sessionPath;
-    env.SELLERSPRITE_EXTENSION_STATE = extensionStatePath;
+  const webSession = await readCdpWebSession(cdpUrl);
+  env.SELLERSPRITE_SESSION_JSON = JSON.stringify({ cookie: webSession.cookie, userAgent: webSession.userAgent });
+  if (['extension', 'mixed'].includes(operationDefinition.authentication)) {
+    const extensionState = await readCdpExtensionState(cdpUrl, extensionId);
+    env.SELLERSPRITE_EXTENSION_STATE_JSON = JSON.stringify(extensionState);
   }
   return await new Promise((resolvePromise, rejectPromise) => {
     const child = spawn(process.execPath, args, { cwd: rootDir, env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -216,7 +175,6 @@ async function callTool(name, args = {}) {
     return jsonContent(await sessionStatus());
   }
   if (name === 'sellersprite_login') {
-    if (authMode !== 'cdp') throw new Error('sellersprite_login requires SELLERSPRITE_AUTH_MODE=cdp.');
     const waitSeconds = args.waitSeconds === undefined ? 180 : Number(args.waitSeconds);
     if (!Number.isInteger(waitSeconds) || waitSeconds < 0 || waitSeconds > 300) {
       throw new Error('waitSeconds must be an integer from 0 to 300.');

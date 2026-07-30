@@ -85,10 +85,10 @@ scripts/start-mcp.mjs                  跨平台 Node 启动器
 ### 1. 获取项目
 
 ```powershell
-git clone REPOSITORY_URL
+git clone https://github.com/JieXi-11/amazon.git sellersprite-mcp
 cd sellersprite-mcp
 node --check src/server.mjs
-node --test test/protocol.test.mjs
+node --test "test/*.test.mjs"
 ```
 
 ### 2. 登录浏览器
@@ -148,13 +148,7 @@ Invoke-RestMethod http://127.0.0.1:9222/json/version
 
 ### 3. 启动 MCP
 
-在任意当前目录下都可以使用绝对路径启动：
-
-```text
-node /absolute/path/to/sellersprite-mcp/scripts/start-mcp.mjs
-```
-
-在项目根目录中可以直接运行：
+在项目根目录运行：
 
 ```bash
 node scripts/start-mcp.mjs
@@ -170,42 +164,6 @@ node src/server.mjs
 ## 接入 Codex
 
 优先安装本仓库提供的 Codex 插件。插件的 `.mcp.json` 使用相对于插件根目录的路径，因此仓库位于哪个盘符、用户目录或安装目录都不影响运行，也不需要手工编辑 `config.toml`。
-
-### 通过 Codex 图形界面配置
-
-在 Codex 的 MCP 设置中新增服务器，选择 **STDIO**，按下面填写：
-
-| 配置项 | 值 |
-|---|---|
-| 名称 | `sellersprite` |
-| 类型 | `STDIO` |
-| 命令 | `node` |
-| 参数 | MCP 启动器的绝对路径，例如 `D:\projects\sellersprite-mcp\scripts\start-mcp.mjs` |
-
-添加以下环境变量：
-
-| 键 | 值 |
-|---|---|
-| `SELLERSPRITE_AUTH_MODE` | `cdp` |
-| `SELLERSPRITE_CDP_URL` | `http://127.0.0.1:9222` |
-
-这是本地 STDIO MCP，不需要填写 URL、Bearer 令牌或 HTTP 标头。保存后重新加载 Codex 的 MCP 配置。
-
-### 通过 `config.toml` 配置
-
-不使用插件时，也可以在 `~/.codex/config.toml` 中直接添加。把入口路径替换为本机项目所在位置：
-
-```toml
-[mcp_servers.sellersprite]
-command = "node"
-args = ["D:/projects/sellersprite-mcp/scripts/start-mcp.mjs"]
-
-[mcp_servers.sellersprite.env]
-SELLERSPRITE_AUTH_MODE = "cdp"
-SELLERSPRITE_CDP_URL = "http://127.0.0.1:9222"
-```
-
-Windows、macOS 和 Linux 都使用同一配置结构，只有 `args` 中的项目绝对路径不同。保存配置后重新加载 Codex。
 
 ### 登录工具如何使用
 
@@ -233,7 +191,7 @@ Agent 会先调用：
 
 1. 在当前操作系统中寻找受支持的 Chromium 浏览器；
 2. 确认浏览器是 Chrome、Edge、Brave 或 Chromium；
-3. 使用 `%LOCALAPPDATA%\SellerSpriteMCP\Chrome` 持久化用户目录；
+3. 使用当前操作系统对应的持久化用户目录；
 4. 启动 `9222` CDP 调试端口；
 5. 打开卖家精灵登录页；
 6. 等待用户在浏览器中完成登录；
@@ -259,12 +217,7 @@ Agent 会先调用：
 Invoke-RestMethod http://127.0.0.1:9222/json/version
 ```
 
-也可以在 MCP 环境变量中明确指定浏览器和用户目录。路径按当前操作系统填写：
-
-```text
-SELLERSPRITE_BROWSER_PATH=/absolute/path/to/chrome
-SELLERSPRITE_BROWSER_PROFILE=/absolute/path/to/persistent-profile
-```
+也可以通过 `SELLERSPRITE_BROWSER_PATH` 和 `SELLERSPRITE_BROWSER_PROFILE` 覆盖自动发现结果。
 
 ## 接入其他 MCP 客户端
 
@@ -275,9 +228,9 @@ SELLERSPRITE_BROWSER_PROFILE=/absolute/path/to/persistent-profile
   "mcpServers": {
     "sellersprite": {
       "command": "node",
-      "args": ["E:/path/to/sellersprite-mcp/src/server.mjs"],
+      "args": ["scripts/start-mcp.mjs"],
+      "cwd": ".",
       "env": {
-        "SELLERSPRITE_AUTH_MODE": "cdp",
         "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
       }
     }
@@ -344,12 +297,9 @@ Agent 会依次调用：
 
 | 环境变量 | 用途 | 默认值 |
 |---|---|---|
-| `SELLERSPRITE_AUTH_MODE` | 认证模式：`cdp` 或备用的 `file` | `cdp` |
 | `SELLERSPRITE_CDP_URL` | 已登录 Chrome 的调试地址 | `http://127.0.0.1:9222` |
 | `SELLERSPRITE_BROWSER_PATH` | 可选；覆盖自动识别的 Chromium 浏览器程序 | 自动发现 |
 | `SELLERSPRITE_BROWSER_PROFILE` | 可选；覆盖当前系统的登录浏览器持久化目录 | 按操作系统自动选择 |
-| `SELLERSPRITE_SESSION` | `file` 模式下的网页 Session JSON | `config/session.json` |
-| `SELLERSPRITE_EXTENSION_STATE` | `file` 模式下的扩展状态文件 | `config/extension-state.json` |
 | `SELLERSPRITE_CALL_TIMEOUT_MS` | 单次调用超时毫秒数 | `120000` |
 | `SELLERSPRITE_MAX_OUTPUT_BYTES` | 单次响应最大字节数 | `20971520` |
 

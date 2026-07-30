@@ -29,8 +29,6 @@
     ".codex-plugin",
     ".mcp.json",
     "data",
-    "config/session.example.json",
-    "config/extension-state.example.json",
     "README.md",
     "README.en.md"
   ]

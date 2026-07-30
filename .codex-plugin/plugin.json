@@ -1,6 +1,6 @@
 {
   "name": "sellersprite-mcp",
-  "version": "0.1.0+codex.20260729113944",
+  "version": "0.1.0+codex.20260730004256",
   "description": "Query SellerSprite product, keyword, traffic, ABA, market, ASIN, and review data from Codex.",
   "author": {
     "name": "SellerSprite MCP contributors"

@@ -76,10 +76,10 @@ Use SellerSprite MCP to check the session and analyze traffic keywords for ASIN 
 ### 1. Get the project
 
 ```powershell
-git clone REPOSITORY_URL
+git clone https://github.com/JieXi-11/amazon.git sellersprite-mcp
 cd sellersprite-mcp
 node --check src/server.mjs
-node --test test/protocol.test.mjs
+node --test "test/*.test.mjs"
 ```
 
 ### 2. Start a login browser
@@ -130,12 +130,6 @@ Invoke-RestMethod http://127.0.0.1:9222/json/version
 
 ### 3. Start the server
 
-From any working directory, use the absolute launcher path:
-
-```text
-node /absolute/path/to/sellersprite-mcp/scripts/start-mcp.mjs
-```
-
 From the project root:
 
 ```bash
@@ -152,20 +146,6 @@ node src/server.mjs
 ## Codex Configuration
 
 Prefer the bundled Codex plugin. Its `.mcp.json` uses plugin-root-relative paths, so the repository can live in any directory without editing `config.toml`.
-
-Add this to `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.sellersprite]
-command = "node"
-args = ["/absolute/path/to/sellersprite-mcp/scripts/start-mcp.mjs"]
-
-[mcp_servers.sellersprite.env]
-SELLERSPRITE_AUTH_MODE = "cdp"
-SELLERSPRITE_CDP_URL = "http://127.0.0.1:9222"
-```
-
-Restart Codex after saving the configuration.
 
 ### Using the login tool
 
@@ -196,9 +176,9 @@ For a generic stdio MCP client:
   "mcpServers": {
     "sellersprite": {
       "command": "node",
-      "args": ["E:/path/to/sellersprite-mcp/src/server.mjs"],
+      "args": ["scripts/start-mcp.mjs"],
+      "cwd": ".",
       "env": {
-        "SELLERSPRITE_AUTH_MODE": "cdp",
         "SELLERSPRITE_CDP_URL": "http://127.0.0.1:9222"
       }
     }
@@ -265,12 +245,9 @@ distribution for the specified US category over the latest 30-day period.
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `SELLERSPRITE_AUTH_MODE` | Authentication mode: `cdp` or fallback `file` | `cdp` |
 | `SELLERSPRITE_CDP_URL` | Debug endpoint of the signed-in Chrome | `http://127.0.0.1:9222` |
 | `SELLERSPRITE_BROWSER_PATH` | Optional override for the discovered Chromium executable | Auto-detected |
 | `SELLERSPRITE_BROWSER_PROFILE` | Optional persistent profile used by the login browser | Platform-specific |
-| `SELLERSPRITE_SESSION` | Web-session JSON used in `file` mode | `config/session.json` |
-| `SELLERSPRITE_EXTENSION_STATE` | Extension state used in `file` mode | `config/extension-state.json` |
 | `SELLERSPRITE_CALL_TIMEOUT_MS` | Call timeout in milliseconds | `120000` |
 | `SELLERSPRITE_MAX_OUTPUT_BYTES` | Maximum response size | `20971520` |
 

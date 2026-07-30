@@ -14,7 +14,6 @@ function startClient() {
     cwd: rootDir,
     env: {
       ...process.env,
-      SELLERSPRITE_AUTH_MODE: 'cdp',
       SELLERSPRITE_CDP_URL: process.env.SELLERSPRITE_CDP_URL || 'http://127.0.0.1:9222'
     },
     stdio: ['pipe', 'pipe', 'pipe'],

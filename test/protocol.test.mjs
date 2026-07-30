@@ -11,7 +11,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 function startClient(env = {}) {
   const child = spawn(process.execPath, [resolve(rootDir, 'src/server.mjs')], {
     cwd: rootDir,
-    env: { ...process.env, SELLERSPRITE_AUTH_MODE: 'file', ...env },
+    env: { ...process.env, SELLERSPRITE_CDP_URL: 'http://127.0.0.1:1', ...env },
     stdio: ['pipe', 'pipe', 'pipe'],
     windowsHide: true
   });

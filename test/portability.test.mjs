@@ -16,29 +16,29 @@ test('plugin MCP configuration is directory-independent', async () => {
   assert.equal(server.command, 'node');
   assert.deepEqual(server.args, ['scripts/start-mcp.mjs']);
   assert.equal(server.cwd, '.');
-  assert.equal(JSON.stringify(config).includes('E:\\'), false);
-  assert.equal(JSON.stringify(config).includes('C:\\Users'), false);
+  assert.doesNotMatch(JSON.stringify(config), /"[A-Za-z]:[\\/]/);
+  assert.doesNotMatch(JSON.stringify(config), /"\/(?:Users|home)\//);
 });
 
 test('browser profile defaults follow each operating system', () => {
   assert.equal(
-    defaultBrowserProfilePath('win32', { LOCALAPPDATA: 'C:\\Local' }),
-    'C:\\Local\\SellerSpriteMCP\\Chrome'
+    defaultBrowserProfilePath('win32', { LOCALAPPDATA: 'PROFILE_ROOT' }),
+    'PROFILE_ROOT\\SellerSpriteMCP\\Chrome'
   );
   assert.equal(
-    defaultBrowserProfilePath('darwin', { HOME: '/Users/example' }),
-    '/Users/example/Library/Application Support/SellerSpriteMCP/Chrome'
+    defaultBrowserProfilePath('darwin', { HOME: 'PROFILE_ROOT' }),
+    'PROFILE_ROOT/Library/Application Support/SellerSpriteMCP/Chrome'
   );
   assert.equal(
-    defaultBrowserProfilePath('linux', { HOME: '/home/example' }),
-    '/home/example/.config/sellersprite-mcp/chrome'
+    defaultBrowserProfilePath('linux', { HOME: 'PROFILE_ROOT' }),
+    'PROFILE_ROOT/.config/sellersprite-mcp/chrome'
   );
 });
 
 test('Node launcher starts the MCP outside the project directory', async (context) => {
   const child = spawn(process.execPath, [resolve(rootDir, 'scripts/start-mcp.mjs')], {
     cwd: tmpdir(),
-    env: { ...process.env, SELLERSPRITE_AUTH_MODE: 'file' },
+    env: { ...process.env, SELLERSPRITE_CDP_URL: 'http://127.0.0.1:1' },
     stdio: ['pipe', 'pipe', 'pipe'],
     windowsHide: true
   });
