@@ -26,6 +26,7 @@
     "src",
     "scripts",
     "data",
+    "docs",
     "mcp.example.json",
     "README.md",
     "README.en.md"
